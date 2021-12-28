@@ -6,25 +6,25 @@ It provides an endpoint to allow search in multiple clinic providers and display
 
 The endpoint accepts a request body that looks like this
 {
-"clinicType": "Vet",
-"searchCriteria": {
-"clinicName": "pet",
-"state": ["California", "CA"],
-"time": "10:00"
-}
+  "clinicType": "Vet",
+  "searchCriteria": {
+    "clinicName": "pet",
+    "state": ["California", "CA"],
+    "time": "10:00"
+  }
 }
 and returns a response object containing a list of matching clinics that looks like
 {
-"vetClinics": [
-{
-"clinicName": "Scratchpay Test Pet Medical Center",
-"stateCode": "CA",
-"opening": {
-"from": "00:00",
-"to": "24:00"
-}
-}
-]
+  "vetClinics": [
+    {
+      "clinicName": "Scratchpay Test Pet Medical Center",
+      "stateCode": "CA",
+      "opening": {
+        "from": "00:00",
+        "to": "24:00"
+      }
+    }
+  ]
 }
 
 To reduce lag in case of large data set of clinic providers, every request comes with the clinic type to search for. This will help prevent unnecessary search in the two datasets and reduce processing time by half.
