@@ -1,0 +1,19 @@
+{
+	"name": "scratch-assessment",
+	"version": "1.0.0",
+	"description": "provides an optimized search functionality to get suitable clinics",
+	"main": "app.js",
+	"scripts": {
+		"test": "jest"
+	},
+	"author": "Chukwudi Ibeche",
+	"license": "ISC",
+	"dependencies": {
+		"joi": "^17.5.0",
+		"winston": "^3.3.3"
+	},
+	"devDependencies": {
+		"jest": "^27.4.5",
+		"nodemon": "^2.0.15"
+	}
+}
