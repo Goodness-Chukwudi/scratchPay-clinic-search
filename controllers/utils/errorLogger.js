@@ -6,7 +6,7 @@
 "use strict";
 const winston = require("winston");
 
-module.exports = function (err) {
+const logger = (err) => {
 	winston.add(
 		new winston.transports.Console({
 			format: winston.format.prettyPrint(),
@@ -18,3 +18,5 @@ module.exports = function (err) {
 		stack: err.stack,
 	});
 };
+
+module.exports = logger;

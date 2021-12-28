@@ -1,6 +1,6 @@
 /**
- * Takes a searchWords object and returns matching clinincs
- * searchWords={
+ * Takes a searchCriteria object and returns matching clinincs
+ * searchCriteria={
  * clinicName: "name of clinic",
  * state: "location of clininc",
  *  time: 1 //appointment time
@@ -11,7 +11,7 @@
 const getClinics = require("../model/getClinics"),
 	convertTime = require("./utils/convertTime");
 
-module.exports = async function findDentalClinics(searchWords) {
+const findDentalClinics = async (searchCriteria) => {
 	let { clinics, error } = await getClinics(
 		"https://storage.googleapis.com/scratchpay-code-challenge/dental-clinics.json"
 	);
@@ -21,7 +21,9 @@ module.exports = async function findDentalClinics(searchWords) {
 	let dentalClinicsSet = new Set(Object.values(clinics)),
 		matchedDentalClinics = [];
 
-	if (searchWords.time) searchWords.time = searchWords.time * 60; //converts time to it's minutes equivalent
+	if (searchCriteria.time)
+		searchCriteria.time = convertTime(searchCriteria.time); //converts time to it's minutes equivalent
+
 	for (const value of dentalClinicsSet.values()) {
 		//assumes they all matched till we find one that doesnt match
 		let nameMatched = true,
@@ -31,16 +33,19 @@ module.exports = async function findDentalClinics(searchWords) {
 			closingTime = convertTime(value.availability.to);
 
 		//test if there is a clinic name match
-		const expression = `.*${searchWords.clinicName}.*`,
+		const expression = `.*${searchCriteria.clinicName}.*`,
 			pattern = new RegExp(expression, "i");
 
-		if (searchWords.clinicName && !pattern.test(value.name)) {
+		if (searchCriteria.clinicName && !pattern.test(value.name)) {
 			nameMatched = false;
 		}
 
 		//test if there is a state or state code match
 		//Assuming they are all in capital letters
-		if (searchWords.state && !searchWords.state.includes(value.stateName)) {
+		if (
+			searchCriteria.state &&
+			!searchCriteria.state.includes(value.stateName)
+		) {
 			stateMatched = false;
 		}
 
@@ -48,8 +53,9 @@ module.exports = async function findDentalClinics(searchWords) {
 		// Assuming the user can only select an hour with no mins and user can't pick the closing time
 		//check if time falls within the available time
 		if (
-			searchWords.time &&
-			(searchWords.time < openingTime || searchWords.time >= closingTime)
+			searchCriteria.time &&
+			(searchCriteria.time < openingTime ||
+				searchCriteria.time >= closingTime)
 		)
 			timeMatched = false;
 
@@ -59,3 +65,5 @@ module.exports = async function findDentalClinics(searchWords) {
 	}
 	return { matchedDentalClinics };
 };
+
+module.exports = findDentalClinics;

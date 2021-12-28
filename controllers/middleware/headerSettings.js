@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = (req, res, next) => {
+const headers = (req, res, next) => {
 	// res.header("Access-Control-Allow-Credentials", true);
 	res.header(
 		"Access-Control-Allow-Origin",
@@ -17,3 +17,5 @@ module.exports = (req, res, next) => {
 		next();
 	}
 };
+
+module.exports = headers;

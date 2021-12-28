@@ -7,13 +7,13 @@
 "use strict";
 const axios = require("axios");
 
-async function getClinics(url) {
+const getClinics = async (url) => {
 	try {
 		const response = await axios.get(url);
 		return { clinics: response.data };
 	} catch (error) {
 		return { error };
 	}
-}
+};
 
 module.exports = getClinics;

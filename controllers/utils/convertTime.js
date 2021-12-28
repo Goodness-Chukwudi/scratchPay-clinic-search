@@ -6,7 +6,7 @@
  *
  * returns the time equivalent in minutes as an interger
  */
-module.exports = (timeString) => {
+const timeConverter = (timeString) => {
 	if (!timeString || typeof timeString !== "string") return null;
 	// Assuming that the time provided has only hour and minutes part
 	let timeFragments = timeString.split(":");
@@ -20,3 +20,5 @@ module.exports = (timeString) => {
 			: parseInt(timeFragments[0]) * 60;
 	} else return null;
 };
+
+module.exports = timeConverter;
