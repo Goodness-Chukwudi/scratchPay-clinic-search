@@ -18,11 +18,11 @@ const findDentalClinics = async (searchCriteria) => {
 
 	if (error) return { error };
 
-	let dentalClinicsSet = new Set(Object.values(clinics)),
-		matchedDentalClinics = [];
-
 	if (searchCriteria.time)
 		searchCriteria.time = convertTime(searchCriteria.time); //converts time to it's minutes equivalent
+
+	let dentalClinicsSet = new Set(Object.values(clinics)),
+		matchedDentalClinics = [];
 
 	for (const value of dentalClinicsSet.values()) {
 		//assumes they all matched till we find one that doesnt match
@@ -32,7 +32,7 @@ const findDentalClinics = async (searchCriteria) => {
 			openingTime = convertTime(value.availability.from),
 			closingTime = convertTime(value.availability.to);
 
-		//test if there is a clinic name match
+		//test if there is a clinic name mixmatch
 		const expression = `.*${searchCriteria.clinicName}.*`,
 			pattern = new RegExp(expression, "i");
 
@@ -40,7 +40,7 @@ const findDentalClinics = async (searchCriteria) => {
 			nameMatched = false;
 		}
 
-		//test if there is a state or state code match
+		//test if there is a state or state code mixmatch
 		//Assuming they are all in capital letters
 		if (
 			searchCriteria.state &&
@@ -49,9 +49,8 @@ const findDentalClinics = async (searchCriteria) => {
 			stateMatched = false;
 		}
 
-		//test if there is an availability match
 		// Assuming the user can only select an hour with no mins and user can't pick the closing time
-		//check if time falls within the available time
+		//check if time doesn't fall within the available time
 		if (
 			searchCriteria.time &&
 			(searchCriteria.time < openingTime ||
@@ -63,6 +62,7 @@ const findDentalClinics = async (searchCriteria) => {
 			matchedDentalClinics.push(value);
 		}
 	}
+	// matchedDentalClinics = clinics;
 	return { matchedDentalClinics };
 };
 

@@ -1,8 +1,6 @@
 /**
- * Handles exceptions that within the req pipeline
+ * Handles exceptions that are within the req pipeline
  */
-
-"use strict";
 
 const errorHandler = (err, req, res, next) => {
 	res.status(500).send("Internal server error");

@@ -2,11 +2,11 @@
 * validates the user search input.
 * A correct input should look like the search object below
 search = {
-		isDentalClinic: true,
+		clinicType: "Dental" || "Vet",
 		searchCriteria: {
 			clinicName: "name of clinic",
 			state: ["state name", "state code"],
-			time: 1, //appointment time
+			time: "10:00", //appointment time
 		},
 	}
  * */

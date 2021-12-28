@@ -21,25 +21,27 @@ const findVetClinics = async (searchCriteria) => {
 	let vetClinicsSet = new Set(Object.values(clinics)),
 		matchedVetClinics = [];
 
-	if (searchCriteria.time) searchCriteria.time = searchCriteria.time * 60; //converts time to it's minutes equivalent
-	for (const value of vetClinicsSet.values()) {
+	if (searchCriteria.time)
+		searchCriteria.time = convertTime(searchCriteria.time); //converts time to it's minutes equivalent
+
+	for (const clinic of vetClinicsSet) {
 		let nameMatched = true,
 			stateMatched = true,
 			timeMatched = true,
-			openingTime = convertTime(value.opening.from),
-			closingTime = convertTime(value.opening.to);
+			openingTime = convertTime(clinic.opening.from),
+			closingTime = convertTime(clinic.opening.to);
 
 		//Regular expression to search for either state name and state code
 		const expression = `.*${searchCriteria.clinicName}.*`,
 			pattern = new RegExp(expression, "i");
 
-		if (searchCriteria.clinicName && !pattern.test(value.clinicName))
+		if (searchCriteria.clinicName && !pattern.test(clinic.clinicName))
 			nameMatched = false;
 
 		//Assuming they are all in capital letters
 		if (
 			searchCriteria.state &&
-			!searchCriteria.state.includes(value.stateCode)
+			!searchCriteria.state.includes(clinic.stateCode)
 		)
 			stateMatched = false;
 
@@ -53,10 +55,9 @@ const findVetClinics = async (searchCriteria) => {
 			timeMatched = false;
 
 		if (timeMatched && stateMatched && nameMatched) {
-			matchedVetClinics.push(value);
+			matchedVetClinics.push(clinic);
 		}
 	}
-
 	return { matchedVetClinics };
 };
 

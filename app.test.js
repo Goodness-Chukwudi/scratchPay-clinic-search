@@ -12,6 +12,9 @@ describe("converts time to minutes", () => {
 		expect(convertTime("")).toBe(null);
 		expect(convertTime("   ")).toBe(null);
 		expect(convertTime(" :  ")).toBe(null);
+		expect(convertTime(" 2hour:3mins")).toBe(123);
+		expect(convertTime(" 2hour:3mins:4secs")).toBe(null);
+		expect(convertTime(" hour2:mins3")).toBe(null);
 		expect(convertTime(" ;  ")).toBe(null);
 		expect(convertTime("1:30:45")).toBe(null);
 	});
@@ -28,12 +31,9 @@ describe("finds matching dental clinics", () => {
 	test("Returns empty object if no match was found", () => {
 		return expect(
 			findDentalClinics({
-				isDentalClinic: true,
-				searchWords: {
-					clinicName: "Scratch Health",
-					state: ["Florida", "FL"],
-					time: 16,
-				},
+				clinicName: "Scratch Health",
+				state: ["Florida", "FL"],
+				time: "16:00",
 			})
 		).resolves.toEqual(expect.objectContaining([]));
 	});
@@ -42,11 +42,8 @@ describe("finds matching dental clinics", () => {
 	test("Returns empty object if no match was found", () => {
 		return expect(
 			findDentalClinics({
-				isDentalClinic: true,
-				searchWords: {
-					clinicName: "Scratch Health",
-					state: ["California", "CA"],
-				},
+				clinicName: "Scratch Health",
+				state: ["California", "CA"],
 			})
 		).resolves.toEqual(expect.objectContaining([]));
 	});
@@ -76,10 +73,7 @@ describe("finds matching dental clinics", () => {
 
 		return expect(
 			findDentalClinics({
-				isDentalClinic: true,
-				searchWords: {
-					state: ["Florida", "FL"],
-				},
+				state: ["Florida", "FL"],
 			})
 		).resolves.toEqual(expected);
 	});
@@ -88,6 +82,14 @@ describe("finds matching dental clinics", () => {
 	test("Returns a clinic object matching the combination of criteria", () => {
 		const expected = expect.objectContaining({
 			matchedDentalClinics: [
+				{
+					name: "Mayo Clinic",
+					stateName: "Florida",
+					availability: expect.objectContaining({
+						from: "09:00",
+						to: "20:00",
+					}),
+				},
 				{
 					name: "Hopkins Hospital Baltimore",
 					stateName: "Florida",
@@ -101,11 +103,8 @@ describe("finds matching dental clinics", () => {
 
 		return expect(
 			findDentalClinics({
-				isDentalClinic: true,
-				searchWords: {
-					state: ["Florida", "FL"],
-					time: 23,
-				},
+				state: ["Florida", "FL"],
+				time: "18:00",
 			})
 		).resolves.toEqual(expected);
 	});
@@ -135,11 +134,8 @@ describe("finds matching dental clinics", () => {
 
 		return expect(
 			findDentalClinics({
-				isDentalClinic: true,
-				searchWords: {
-					clinicName: "Scratchpay",
-					time: 9,
-				},
+				clinicName: "Scratchpay",
+				time: "9:00",
 			})
 		).resolves.toEqual(expected);
 	});
@@ -148,14 +144,6 @@ describe("finds matching dental clinics", () => {
 	test("Returns a clinic object matching the combination of criteria", () => {
 		const expected = expect.objectContaining({
 			matchedDentalClinics: [
-				{
-					name: "Scratchpay Test Pet Medical Center",
-					stateName: "California",
-					availability: expect.objectContaining({
-						from: "00:00",
-						to: "24:00",
-					}),
-				},
 				{
 					name: "Good Health Home",
 					stateName: "Alaska",
@@ -169,12 +157,9 @@ describe("finds matching dental clinics", () => {
 
 		return expect(
 			findDentalClinics({
-				isDentalClinic: true,
-				searchWords: {
-					clinicName: "Good Health Home",
-					state: ["Alaska", "AK"],
-					time: 11,
-				},
+				clinicName: "Good Health Home",
+				state: ["Alaska", "AK"],
+				time: "11:00",
 			})
 		).resolves.toEqual(expected);
 	});
@@ -186,12 +171,9 @@ describe("finds matching vet clinics", () => {
 	test("Returns empty object if no match was found", () => {
 		return expect(
 			findVetClinics({
-				isDentalClinic: false,
-				searchWords: {
-					clinicName: "Good Health Home",
-					state: ["Florida", "FL"],
-					time: 7,
-				},
+				clinicName: "Good Health Home",
+				state: ["Florida", "FL"],
+				time: "7:00",
 			})
 		).resolves.toEqual(expect.objectContaining([]));
 	});
@@ -200,11 +182,8 @@ describe("finds matching vet clinics", () => {
 	test("Returns empty object if no match was found", () => {
 		return expect(
 			findVetClinics({
-				isDentalClinic: false,
-				searchWords: {
-					clinicName: "Scratchpay Test Pet Medical Center",
-					state: ["Florida", "FL"],
-				},
+				clinicName: "Scratchpay Test Pet Medical Center",
+				state: ["Florida", "FL"],
 			})
 		).resolves.toEqual(expect.objectContaining([]));
 	});
@@ -226,10 +205,7 @@ describe("finds matching vet clinics", () => {
 
 		return expect(
 			findVetClinics({
-				isDentalClinic: false,
-				searchWords: {
-					state: ["Florida", "FL"],
-				},
+				state: ["Florida", "FL"],
 			})
 		).resolves.toEqual(expected);
 	});
@@ -260,10 +236,8 @@ describe("finds matching vet clinics", () => {
 
 		return expect(
 			findVetClinics({
-				isDentalClinic: false,
-				searchWords: {
-					time: 8,
-				},
+				clinicName: "pet",
+				time: "8:00",
 			})
 		).resolves.toEqual(expected);
 	});
@@ -285,10 +259,7 @@ describe("finds matching vet clinics", () => {
 
 		return expect(
 			findVetClinics({
-				isDentalClinic: false,
-				searchWords: {
-					clinicName: "Scratchpay",
-				},
+				clinicName: "Scratchpay",
 			})
 		).resolves.toEqual(expected);
 	});
@@ -298,11 +269,11 @@ describe("finds matching vet clinics", () => {
 		const expected = expect.objectContaining({
 			matchedVetClinics: [
 				{
-					clinicName: "City Vet Clinic",
-					stateCode: "NV",
+					clinicName: "Scratchpay Test Pet Medical Center",
+					stateCode: "CA",
 					opening: expect.objectContaining({
-						from: "10:00",
-						to: "22:00",
+						from: "00:00",
+						to: "24:00",
 					}),
 				},
 			],
@@ -310,12 +281,9 @@ describe("finds matching vet clinics", () => {
 
 		return expect(
 			findVetClinics({
-				isDentalClinic: false,
-				searchWords: {
-					clinicName: "Scratchpay",
-					state: ["Florida", "FL"],
-					time: 10,
-				},
+				clinicName: "Scratchpay",
+				state: ["California", "CA"],
+				time: "10:00",
 			})
 		).resolves.toEqual(expected);
 	});
